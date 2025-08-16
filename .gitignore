@@ -1,2 +1,4 @@
 /main.py.old
 /.env
+/passenger.log
+/passenger_wsgi.py
