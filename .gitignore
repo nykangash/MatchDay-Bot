@@ -2,3 +2,4 @@
 /.env
 /passenger.log
 /passenger_wsgi.py
+/test-env

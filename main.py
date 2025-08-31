@@ -1,3 +1,4 @@
+import os 
 import logging
 import requests
 import telegrampy
@@ -5,12 +6,20 @@ from telegrampy.ext import commands
 import datetime
 import pytz
 from persiantools.jdatetime import JalaliDate
+from dotenv import load_dotenv
+import emoji
+
 
 logging.basicConfig(level=logging.INFO, format="(%(asctime)s) %(levelname)s %(message)s", datefmt="%m/%d/%y - %H:%M:%S %Z")
 logger = logging.getLogger("telegrampy")
+load_dotenv()
+
+api_token = os.getenv("API_TOKEN")
+test_token = os.getenv("TEST_TOKEN")
+seperator = "-------------------------------------------------------------"
 
 # Replace this with your actual bot token
-bot = commands.Bot("API_TOKEN")
+bot = commands.Bot(api_token)
 
 team_id = {
     "liv": "133602",
@@ -91,13 +100,18 @@ def next_match_finder(team):
     formatted_date = next_game_date.strftime("%B %d") 
     stadium = cleared_data["strVenue"]
     return (
-        f"تیم های: {next_game}\n"
-        f"مسابقات: {game_league}\n" 
-        f"دور: {game_round}\n"
-        f"روز: {rooz[weekday]}\n"
-        f"تاریخ: {formatted_date}\n"
-        f"ساعت: {next_game_datetime.strftime('%H:%M')}\n"
-        f"ورزشگاه: {stadium}"
+        f"# بازی بعدی #\n\n"
+        f"{emoji.emojize(":soccer_ball:")} تیم های: {next_game}\n"
+        f"{seperator}\n"
+        f"{emoji.emojize(":trophy:")} مسابقات: {game_league}\n" 
+        f"{seperator}\n"
+        f"{emoji.emojize(":input_numbers:")} دور: {game_round}\n" 
+        f"{seperator}\n"
+        f"{emoji.emojize(":calendar:")} تاریخ: {rooz[weekday]} ({formatted_date})\n"
+        f"{seperator}\n"
+        f"{emoji.emojize(":alarm_clock:")} ساعت: {next_game_datetime.strftime('%H:%M')}\n"
+        f"{seperator}\n"
+        f"{emoji.emojize(":stadium:")} ورزشگاه: {stadium}"
     )
 
 
@@ -136,7 +150,7 @@ async def tot(ctx):
 async def acm(ctx):
     await ctx.send(next_match_finder("acm"))
 @bot.command()
-async def inter(ctx):
+async def intm(ctx):
     await ctx.send(next_match_finder("int"))
 @bot.command()
 async def nap(ctx):
