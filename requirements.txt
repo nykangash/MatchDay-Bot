@@ -4,3 +4,4 @@ pytz
 persiantools
 python-dotenv
 emoji
+schedule
