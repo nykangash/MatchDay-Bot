@@ -10,7 +10,7 @@ load_dotenv()
 
 api_token = os.getenv("API_TOKEN")
 test_token = os.getenv("TEST_TOKEN")
-seperator = "-------------------------------------------------------------"
+
 
 # Replace this with your actual bot token
 bot = commands.Bot(api_token)
@@ -28,7 +28,7 @@ def show_match(team):
     
 def show_today_match():
     if os.path.getsize("teams_data/output.txt") > 0 :
-        with open("teams_data/output.txt", "r") as f:
+        with open("teams_data/output.txt", "r", encoding="utf-8") as f:
             file_contents = f.read()
             return file_contents
     return "امروز بازی نداره"   
@@ -73,6 +73,10 @@ async def arg(ctx):
 @bot.command()
 async def brz(ctx):
     await ctx.send(show_match("brz"))
+
+
+
+
 
 
 #   SPAIN

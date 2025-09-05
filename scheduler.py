@@ -9,7 +9,6 @@ import emoji
 
 
 
-seperator = "-------------------------------------------------------"
 team_id = {
     "liv": "133602",
     "rma": "133738",
@@ -39,6 +38,7 @@ team_id = {
     "brz": "134496",
     "spn": "133909"
 }
+#TODO: Eng, Spa, Por, Net, Ger, Ita, Fra, Tur, Bra, Arg (FIX SHORT NAMES)
 
 rooz = {
     0: "شنبه",
@@ -49,6 +49,8 @@ rooz = {
     5: "پنجشنبه",
     6: "جمعه"
 }
+
+
 
 def timezone_convert(gametime_utc_str):
     """Converts a UTC timestamp string to a timezone-aware datetime object."""
@@ -80,7 +82,7 @@ def today_games_updater(game_date):
 
 def next_match_finder():
     open("teams_data/output.txt", "w").close()
-
+    output_header = True
     for team in team_id:
         
         #   clears team file
@@ -115,17 +117,34 @@ def next_match_finder():
         weekday, next_game_date = date_converter(cleared_data["strTimestamp"])
         formatted_date = next_game_date.strftime("%B %d") 
         stadium = cleared_data["strVenue"]
-        
+        seperator = "-" * ((len(cleared_data["strEvent"])*2) + 5)
         is_game_today = today_games_updater(next_game_datetime)
+
+        
         if is_game_today:
+            seperator = "-" * ((len(cleared_data["strEvent"])*2) + 5)
             print(team + " is today !")
-            with open("teams_data/output.txt", 'a')as f: 
-                f.write(cleared_data["strEvent"]+ "\n" + next_game_datetime.strftime('%H:%M') +  "\n" + seperator + "\n")
+            if output_header:
+                with open("teams_data/output.txt", "a", encoding="utf-8")as f: 
+                    f.write(
+                            "#  بازی های امروز  #\n\n"
+                            f"{emoji.emojize(":soccer_ball:")}: {next_game}\n"  
+                            f"{emoji.emojize(":alarm_clock:")}: {next_game_datetime.strftime('%H:%M')}\n"  
+                            f"{seperator}\n"
+                            )
+                output_header = False
+            else:
+                with open("teams_data/output.txt", "a", encoding="utf-8")as f: 
+                    f.write(
+                            f"{emoji.emojize(":soccer_ball:")}: {next_game}\n"  
+                            f"{emoji.emojize(":alarm_clock:")}: {next_game_datetime.strftime('%H:%M')}\n"  
+                            f"{seperator}\n"
+                            )
 
         with open(f"teams_data/{team}.txt", "a", encoding="utf-8") as f:
 
             f.write(
-                f"# بازی بعدی #\n\n"
+                "# بازی بعدی #\n\n"
                 f"{emoji.emojize(":soccer_ball:")} تیم های: {next_game}\n"
                 f"{seperator}\n"
                 f"{emoji.emojize(":trophy:")} مسابقات: {game_league}\n" 
@@ -141,7 +160,19 @@ def next_match_finder():
             print(team+" DONE!!!!!")
         
     
-schedule.every().day.at("04:00").do(next_match_finder)
+
+
+
+
+schedule.every().day.at("01:00").do(next_match_finder)
+schedule.every().day.at("06:00").do(next_match_finder)
+schedule.every().day.at("12:00").do(next_match_finder)
+schedule.every().day.at("15:00").do(next_match_finder)
+schedule.every().day.at("18:00").do(next_match_finder)
+schedule.every().day.at("21:00").do(next_match_finder)
+
+
+next_match_finder()
 
 while True:
     schedule.run_pending()
