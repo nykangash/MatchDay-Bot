@@ -1,7 +1,0 @@
-telegram.py
-requests
-pytz
-persiantools
-python-dotenv
-emoji
-schedule
