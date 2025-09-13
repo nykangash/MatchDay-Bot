@@ -1,3 +1,6 @@
 /.env
 /test-env
 /teams_data
+/.python-version
+/requirements.txt
+/README.md

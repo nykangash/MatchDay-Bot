@@ -4,6 +4,8 @@ import telegrampy
 from telegrampy.ext import commands
 from dotenv import load_dotenv
 
+
+
 logging.basicConfig(level=logging.INFO, format="(%(asctime)s) %(levelname)s %(message)s", datefmt="%m/%d/%y - %H:%M:%S %Z")
 logger = logging.getLogger("telegrampy")
 load_dotenv()
@@ -13,12 +15,17 @@ test_token = os.getenv("TEST_TOKEN")
 
 
 # Replace this with your actual bot token
-bot = commands.Bot(api_token)
+bot = commands.Bot(test_token)
 
-
+usage_counter = 0
 # Persian weekday names mapped to JalaliDate.weekday() output (0=شنبه)
 
+
+def show_usage_counter():
+    return usage_counter
 def show_match(team):
+    global usage_counter 
+    usage_counter += 1
     if os.path.getsize(f"teams_data/{team}.txt") == 0 :
         return "بازی نداره"   
     
@@ -27,6 +34,8 @@ def show_match(team):
         return file_contents
     
 def show_today_match():
+    global usage_counter 
+    usage_counter += 1
     if os.path.getsize("teams_data/output.txt") > 0 :
         with open("teams_data/output.txt", "r", encoding="utf-8") as f:
             file_contents = f.read()
@@ -44,26 +53,26 @@ async def today(ctx):
 
 #   NATIONAL TEAMS
 @bot.command()
-async def spn(ctx):
-    await ctx.send(show_match("spn"))
+async def spa(ctx):
+    await ctx.send(show_match("spa"))
 @bot.command()
 async def eng(ctx):
     await ctx.send(show_match("eng"))
 @bot.command()
-async def blg(ctx):
-    await ctx.send(show_match("blg"))
+async def bel(ctx):
+    await ctx.send(show_match("bel"))
 @bot.command()
-async def net(ctx):
-    await ctx.send(show_match("net"))
+async def ned(ctx):
+    await ctx.send(show_match("ned"))
 @bot.command()
-async def itl(ctx):
-    await ctx.send(show_match("itl"))
+async def ita(ctx):
+    await ctx.send(show_match("ita"))
 @bot.command()
-async def grm(ctx):
-    await ctx.send(show_match("grm"))
+async def ger(ctx):
+    await ctx.send(show_match("ger"))
 @bot.command()
-async def frc(ctx):
-    await ctx.send(show_match("frc"))
+async def fra(ctx):
+    await ctx.send(show_match("fra"))
 @bot.command()
 async def por(ctx):
     await ctx.send(show_match("por"))
@@ -71,8 +80,8 @@ async def por(ctx):
 async def arg(ctx):
     await ctx.send(show_match("arg"))
 @bot.command()
-async def brz(ctx):
-    await ctx.send(show_match("brz"))
+async def bra(ctx):
+    await ctx.send(show_match("bra"))
 
 
 
@@ -87,8 +96,8 @@ async def atm(ctx):
 async def rma(ctx):
     await ctx.send(show_match("rma"))
 @bot.command()
-async def fcb(ctx):
-    await ctx.send(show_match("fcb"))
+async def bar(ctx):
+    await ctx.send(show_match("bar"))
 
 
 #   ENGLAND
@@ -100,11 +109,11 @@ async def ars(ctx):
 async def liv(ctx):
     await ctx.send(show_match("liv"))
 @bot.command()
-async def mnu(ctx):
-    await ctx.send(show_match("mnu"))
+async def manu(ctx):
+    await ctx.send(show_match("manu"))
 @bot.command()
-async def mnc(ctx):
-    await ctx.send(show_match("mnc"))
+async def manc(ctx):
+    await ctx.send(show_match("manc"))
 @bot.command()
 async def tot(ctx):
     await ctx.send(show_match("tot"))
@@ -112,10 +121,10 @@ async def tot(ctx):
 
 #   ITALY
 @bot.command()
-async def acm(ctx):
-    await ctx.send(show_match("acm"))
+async def mil(ctx):
+    await ctx.send(show_match("mil"))
 @bot.command()
-async def intm(ctx):
+async def int(ctx):
     await ctx.send(show_match("int"))
 @bot.command()
 async def nap(ctx):
@@ -146,7 +155,7 @@ async def est(ctx):
 @bot.command()
 async def prs(ctx):
     await ctx.send(show_match("prs"))
-    
-
-
+@bot.command()
+async def usagecounter(ctx):
+    await ctx.send(show_usage_counter())
 bot.run()

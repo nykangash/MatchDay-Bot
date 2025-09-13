@@ -1,0 +1,15 @@
+[project]
+name = "matchdaybot"
+version = "0.1.0"
+description = "a telegram bot for checking you favorite team's next game or games that will happen today"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "emoji>=2.14.1",
+    "persiantools>=5.3.0",
+    "python-dotenv>=1.1.1",
+    "pytz>=2025.2",
+    "requests>=2.32.5",
+    "schedule>=1.2.2",
+    "telegram-py>=0.3.1",
+]
