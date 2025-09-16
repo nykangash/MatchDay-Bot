@@ -3,7 +3,7 @@ import logging
 import telegrampy
 from telegrampy.ext import commands
 from dotenv import load_dotenv
-
+from findLineup import main_function
 
 
 logging.basicConfig(level=logging.INFO, format="(%(asctime)s) %(levelname)s %(message)s", datefmt="%m/%d/%y - %H:%M:%S %Z")
@@ -42,7 +42,17 @@ def show_today_match():
             return file_contents
     return "امروز بازی نداره"   
     
-        
+def show_lineup(team):
+    global usage_counter
+    usage_counter += 1
+    main_function(team)
+    if os.path.getsize(f"teams_data/forlineup/{team}lineup.txt") > 0 :
+        with open("teams_data/forlineup/{team}lineup.txt", "r", encoding="utf-8") as f:
+            file_contents = f.read()
+            return file_contents
+    return "لاین آپ نداریم"   
+    
+    
     
 
 
@@ -50,6 +60,28 @@ def show_today_match():
 @bot.command()
 async def today(ctx):
     await ctx.send(show_today_match())
+
+
+#   LINEUP COMMANDS
+@bot.command()
+async def rmal(ctx):
+    await ctx.send(show_lineup("rma"))
+@bot.command()
+async def psgl(ctx):
+    await ctx.send(show_lineup("psg"))
+@bot.command()
+async def livl(ctx):
+    await ctx.send(show_lineup("liv"))
+@bot.command()
+async def manul(ctx):
+    await ctx.send(show_lineup("manu"))
+
+
+
+
+
+
+
 
 #   NATIONAL TEAMS
 @bot.command()
@@ -117,6 +149,9 @@ async def manc(ctx):
 @bot.command()
 async def tot(ctx):
     await ctx.send(show_match("tot"))
+@bot.command()
+async def che(ctx):
+    await ctx.send(show_match("che"))
 
 
 #   ITALY

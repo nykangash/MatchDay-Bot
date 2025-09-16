@@ -6,7 +6,8 @@ from persiantools.jdatetime import JalaliDate
 import pytz
 import emoji
  
- 
+
+
 #   TODO: better variable names if it's possible
 team_id = {
     "rma": "133738",
@@ -66,40 +67,62 @@ def timezone_convert(gametime_utc_str):
     local_time = utc_time.astimezone(target_timezone)
     return local_time
 
+
 def date_converter(gametime_utc_str):
     """
         Converts a UTC timestamp to Jalali date 
         and weekday in Tehran's timezone.
-    
+        
     """
     # Reuse the timezone_convert function to get the local datetime    
     local_datetime = timezone_convert(gametime_utc_str)
+    
     # Extract the date and convert to Jalali
     gregorian_date = local_datetime.date()
     jalali_date = JalaliDate.to_jalali(gregorian_date)
+    
     # jalali_date.weekday() returns 0 for Saturday
     return jalali_date.weekday(), jalali_date
 
 
+
+
+#   TODO:   clean code with removing this function and the one under this one (_game_updater & _games_sort) 
+#           they are probably useless in this state and can be one (MAYBE)
+
+
 def today_games_updater(game_date):
-    #   updates output.txt everyday at 00:00 for football games of that day (if no game:  return "str" will happen in main script)
+    '''
+        Checks if a game will happen today or not 
+
+        return bool
+    '''
+
     today_date = datetime.datetime.today().strftime('%Y-%m-%d')
     if game_date.strftime('%Y-%m-%d') == today_date:
         return True
 
-
 def today_games_sort(next_game, next_game_datetime):
     games = {}
-    for i, v in enumerate(next_game):      
-        games.update({next_game_datetime[i]: v})
-    games_sorted = sorted(games.keys())
-        
-    return games, games_sorted
+    
+    for i, v in enumerate(next_game):
+        try:
+            games.setdefault(v , next_game_datetime[i])
+        except ValueError:
+            continue
+    
+    games = {k: v for k, v in sorted(games.items(), key=lambda item: item[1])}
+    
+    
+    return games
 
-
-#########################################################################################################################
 
 def next_match_finder():
+    '''
+        somehow main function...API calls and most of main code is here
+    
+    '''
+
     #   CLEAR FILES FOR NEW OUTPUT
     open("teams_data/output.txt", "w").close()
     next_game_list = []
@@ -173,43 +196,36 @@ def next_match_finder():
         print(team+" DONE!!!!!")
     
     
-    today_sorted_dict, today_sorted_keys = today_games_sort(next_game_list, next_game_datetime_list)
+    today_sorted_dict = today_games_sort(next_game_list, next_game_datetime_list)
     print("today sorting DONE")
     output_header = True
-    duplicate = False
-    separator = "-" * int((len(max(next_game_list, key=len))*2))
-    for i in today_sorted_keys:
-        if output_header:
-            try:
-                with open("teams_data/output.txt", "r") as rf:
-                    file_content = rf.read()
-                    if today_sorted_dict[i] in file_content:
-                        duplicate = True
-                    else:
-                        duplicate = False
-            except FileNotFoundError:
-                print("something happened while reading the file...")
-            if duplicate is False:
-                with open("teams_data/output.txt", "a", encoding="utf-8")as f:                 
-                    f.write(
-                            "بازی های امروز\n\n"
-                            f"{emoji.emojize(":soccer_ball:")} تیم های: {today_sorted_dict[i]}\n"
-                            f"{emoji.emojize(":alarm_clock:")} ساعت: {i}\n"  
-                            f"{separator}\n"
-                            )
-                output_header = False
-        else:
-            if duplicate is False:
-                with open("teams_data/output.txt", "a", encoding="utf-8")as f: 
-                
-                    f.write(
-                            f"{emoji.emojize(":soccer_ball:")} تیم های: {today_sorted_dict[i]}\n"  
-                            f"{emoji.emojize(":alarm_clock:")} ساعت: {i}\n"  
-                            f"{separator}\n"
-                                )
-    print("today writing done")
+    separator = "-" * 40#int((len(max(next_game_list, key=len))*2))
+    
+    for k, v in today_sorted_dict.items():
+        if output_header:     
+            print("writing output.txt")
+            with open("teams_data/output.txt", "a", encoding="utf-8")as f:                 
+                f.write(
+                        "بازی های امروز\n\n"
+                        f"{emoji.emojize(":soccer_ball:")} تیم های: {k}\n"
+                        f"{emoji.emojize(":alarm_clock:")} ساعت: {v}\n"  
+                        f"{separator}\n"
 
-#########################################################################################################################
+                        )
+            output_header = False
+        else:
+            print("writing output.txt")
+            with open("teams_data/output.txt", "a", encoding="utf-8")as f: 
+            
+                f.write(
+                        f"{emoji.emojize(":soccer_ball:")} تیم های: {k}\n"  
+                        f"{emoji.emojize(":alarm_clock:")} ساعت: {v}\n"  
+                        f"{separator}\n"
+                        
+                            )
+              
+    print("Done at", datetime.datetime.now().strftime("%H:%M"))
+
 
 # SCHEDULE RUNS
 schedule.every().day.at("23:30").do(next_match_finder)
@@ -218,7 +234,6 @@ schedule.every().day.at("10:30").do(next_match_finder)
 schedule.every().day.at("13:30").do(next_match_finder)
 schedule.every().day.at("16:30").do(next_match_finder)
 schedule.every().day.at("19:30").do(next_match_finder)
-
 
 next_match_finder()
 
