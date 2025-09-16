@@ -15,7 +15,7 @@ test_token = os.getenv("TEST_TOKEN")
 
 
 # Replace this with your actual bot token
-bot = commands.Bot(test_token)
+bot = commands.Bot(api_token)
 
 usage_counter = 0
 # Persian weekday names mapped to JalaliDate.weekday() output (0=شنبه)
@@ -47,7 +47,7 @@ def show_lineup(team):
     usage_counter += 1
     main_function(team)
     if os.path.getsize(f"teams_data/forlineup/{team}lineup.txt") > 0 :
-        with open("teams_data/forlineup/{team}lineup.txt", "r", encoding="utf-8") as f:
+        with open(f"teams_data/forlineup/{team}lineup.txt", "r", encoding="utf-8") as f:
             file_contents = f.read()
             return file_contents
     return "لاین آپ نداریم"   
@@ -65,17 +65,19 @@ async def today(ctx):
 #   LINEUP COMMANDS
 @bot.command()
 async def rmal(ctx):
-    await ctx.send(show_lineup("rma"))
+    await ctx.send(show_lineup("rma"), parse_mode="MarkdownV2")
 @bot.command()
 async def psgl(ctx):
-    await ctx.send(show_lineup("psg"))
+    await ctx.send(show_lineup("psg"), parse_mode="MarkdownV2")
 @bot.command()
 async def livl(ctx):
-    await ctx.send(show_lineup("liv"))
+    await ctx.send(show_lineup("liv"), parse_mode="MarkdownV2")
 @bot.command()
 async def manul(ctx):
-    await ctx.send(show_lineup("manu"))
-
+    await ctx.send(show_lineup("manu"), parse_mode="MarkdownV2")
+@bot.command()
+async def totl(ctx):
+    await ctx.send(show_lineup("tot"), parse_mode="MarkdownV2")
 
 
 
