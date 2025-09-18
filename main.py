@@ -78,10 +78,21 @@ async def manul(ctx):
 @bot.command()
 async def totl(ctx):
     await ctx.send(show_lineup("tot"), parse_mode="MarkdownV2")
-
-
-
-
+@bot.command()
+async def arsl(ctx):
+    await ctx.send(show_lineup("ars"), parse_mode="MarkdownV2")
+@bot.command()
+async def mancl(ctx):
+    await ctx.send(show_lineup("manc"), parse_mode="MarkdownV2")
+@bot.command()
+async def barl(ctx):
+    await ctx.send(show_lineup("bar"), parse_mode="MarkdownV2")
+@bot.command()
+async def estl(ctx):
+    await ctx.send(show_lineup("est"), parse_mode="MarkdownV2")
+@bot.command()
+async def prsl(ctx):
+    await ctx.send(show_lineup("prs"), parse_mode="MarkdownV2")
 
 
 
@@ -118,10 +129,6 @@ async def bra(ctx):
     await ctx.send(show_match("bra"))
 
 
-
-
-
-
 #   SPAIN
 @bot.command()
 async def atm(ctx):
@@ -155,7 +162,6 @@ async def tot(ctx):
 async def che(ctx):
     await ctx.send(show_match("che"))
 
-
 #   ITALY
 @bot.command()
 async def mil(ctx):
@@ -183,7 +189,6 @@ async def bvb(ctx):
 @bot.command()
 async def bay(ctx):
     await ctx.send(show_match("bay"))
-
 
 #   IRAN
 @bot.command()
