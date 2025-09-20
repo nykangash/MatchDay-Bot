@@ -66,7 +66,7 @@ def next_match_finder():
     open("teams_data/output.txt", "w").close()
     next_game_list = []
     next_game_datetime_list = []
-            
+    
     for team in teamid_sportdb:
         #   CLEAR FILES FOR NEW OUTPUT
         open(f"teams_data/{team}.txt", "w").close()
@@ -95,7 +95,7 @@ def next_match_finder():
         weekday, next_game_date = date_converter(cleared_data["strTimestamp"])
         formatted_date = next_game_date.strftime("%B %d") 
         stadium = cleared_data["strVenue"]
-        separator = "-" * ((len(next_game)*2) + 11)
+        separator = "\u2014" * ((len(next_game)+12)//2)
         is_game_today = today_games_updater(next_game_datetime)
 
         #   check if game is for today and gather it for /today command
@@ -105,19 +105,23 @@ def next_match_finder():
             next_game_datetime_list.append(next_game_datetime.strftime('%H:%M'))
 
         with open(f"teams_data/{team}.txt", "a", encoding="utf-8") as f:
-    #   TODO:   LOOK FOR A BETTER OUTPUT, MAYBE BETTER ALIGNMENT FOR TITLE AND TEAM NAMES
+    
+    
+    #TODO:   LOOK FOR A BETTER OUTPUT, MAYBE BETTER ALIGNMENT FOR TITLE AND TEAM NAMES
+    
+    
             f.write(
                 "# بازی بعدی #\n\n"
                 f"{emoji.emojize(":soccer_ball:")} تیم های: {next_game}\n"
-                f"{separator}\n"
+                f"\u200f{separator}\n"
                 f"{emoji.emojize(":trophy:")} مسابقات: {game_league}\n" 
-                f"{separator}\n"
+                f"\u200f{separator}\n"
                 f"{emoji.emojize(":input_numbers:")} دور: {game_round}\n" 
-                f"{separator}\n"
+                f"\u200f{separator}\n"
                 f"{emoji.emojize(":calendar:")} تاریخ: {rooz[weekday]} ({formatted_date})\n"
-                f"{separator}\n"
+                f"\u200f{separator}\n"
                 f"{emoji.emojize(":alarm_clock:")} ساعت: {next_game_datetime.strftime('%H:%M')}\n"
-                f"{separator}\n"
+                f"\u200f{separator}\n"
                 f"{emoji.emojize(":stadium:")} ورزشگاه: {stadium}"
             )
     
@@ -127,7 +131,7 @@ def next_match_finder():
     today_sorted_dict = today_games_sort(next_game_list, next_game_datetime_list)
     print("today sorting DONE")
     output_header = True
-    separator = "-" * 40#int((len(max(next_game_list, key=len))*2))
+    separator = "\u2014" * ((len(max(next_game_list, key=len))+ 12)//2)
     
     for k, v in today_sorted_dict.items():
         if output_header:     
@@ -137,7 +141,7 @@ def next_match_finder():
                         "بازی های امروز\n\n"
                         f"{emoji.emojize(":soccer_ball:")} تیم های: {k}\n"
                         f"{emoji.emojize(":alarm_clock:")} ساعت: {v}\n"  
-                        f"{separator}\n"
+                        f"\u200f{separator}\n"
 
                         )
             output_header = False
@@ -148,19 +152,14 @@ def next_match_finder():
                 f.write(
                         f"{emoji.emojize(":soccer_ball:")} تیم های: {k}\n"  
                         f"{emoji.emojize(":alarm_clock:")} ساعت: {v}\n"  
-                        f"{separator}\n"
+                        f"\u200f{separator}\n"
                         
                             )
               
     print("Done at", datetime.datetime.now().strftime("%H:%M"))
 
 # SCHEDULE RUNS
-schedule.every().day.at("23:30").do(next_match_finder)
-schedule.every().day.at("04:30").do(next_match_finder)
-schedule.every().day.at("10:30").do(next_match_finder)
-schedule.every().day.at("13:30").do(next_match_finder)
-schedule.every().day.at("16:30").do(next_match_finder)
-schedule.every().day.at("19:30").do(next_match_finder)
+schedule.every().hour.do(next_match_finder)
 
 next_match_finder()
 
