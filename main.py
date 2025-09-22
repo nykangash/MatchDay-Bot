@@ -64,36 +64,9 @@ async def today(ctx):
 
 #   LINEUP COMMANDS
 @bot.command()
-async def rmal(ctx):
-    await ctx.send(show_lineup("rma"), parse_mode="MarkdownV2")
-@bot.command()
-async def psgl(ctx):
-    await ctx.send(show_lineup("psg"), parse_mode="MarkdownV2")
-@bot.command()
-async def livl(ctx):
-    await ctx.send(show_lineup("liv"), parse_mode="MarkdownV2")
-@bot.command()
-async def manul(ctx):
-    await ctx.send(show_lineup("manu"), parse_mode="MarkdownV2")
-@bot.command()
-async def totl(ctx):
-    await ctx.send(show_lineup("tot"), parse_mode="MarkdownV2")
-@bot.command()
-async def arsl(ctx):
-    await ctx.send(show_lineup("ars"), parse_mode="MarkdownV2")
-@bot.command()
-async def mancl(ctx):
-    await ctx.send(show_lineup("manc"), parse_mode="MarkdownV2")
-@bot.command()
-async def barl(ctx):
-    await ctx.send(show_lineup("bar"), parse_mode="MarkdownV2")
-@bot.command()
-async def estl(ctx):
-    await ctx.send(show_lineup("est"), parse_mode="MarkdownV2")
-@bot.command()
-async def prsl(ctx):
-    await ctx.send(show_lineup("prs"), parse_mode="MarkdownV2")
-
+async def lineup(ctx, team_code):
+    team_code = team_code.lower()
+    await ctx.send(show_lineup(team_code), parse_mode="MarkdownV2")
 
 
 #   NATIONAL TEAMS
