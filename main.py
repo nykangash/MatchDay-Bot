@@ -14,11 +14,9 @@ api_token = os.getenv("API_TOKEN")
 test_token = os.getenv("TEST_TOKEN")
 
 
-# Replace this with your actual bot token
 bot = commands.Bot(api_token)
 
 usage_counter = 0
-# Persian weekday names mapped to JalaliDate.weekday() output (0=شنبه)
 
 
 def show_usage_counter():
@@ -51,9 +49,16 @@ def show_lineup(team):
             file_contents = f.read()
             return file_contents
     return "لاین آپ نداریم"   
-    
-    
-    
+
+def show_lastgame(team):
+    global usage_counter
+    usage_counter += 1
+    if os.path.getsize(f"teams_data/latestgames/{team}.txt") > 0:
+        with open(f"teams_data/latestgames/{team}.txt", "r", encoding="utf-8") as f:
+            file_contents = f.read()
+            return file_contents
+    else:
+        return "نتیجه نداریم"
 
 
 
@@ -68,6 +73,14 @@ async def lineup(ctx, team_code):
     team_code = team_code.lower()
     await ctx.send(show_lineup(team_code), parse_mode="MarkdownV2")
 
+
+#   SHOW SOCRE OF TEAM'S LATEST GAME
+# @bot.command()
+# async def last(ctx, team_code):
+#     team_code = team_code.lower()
+#     await ctx.send(show_lastgame(team_code))
+
+    
 
 #   NATIONAL TEAMS
 @bot.command()
