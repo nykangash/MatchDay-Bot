@@ -106,10 +106,6 @@ def next_match_finder():
 
         with open(f"teams_data/{team}.txt", "a", encoding="utf-8") as f:
     
-    
-    #TODO:   LOOK FOR A BETTER OUTPUT, MAYBE BETTER ALIGNMENT FOR TITLE AND TEAM NAMES
-    
-    
             f.write(
                 "# بازی بعدی #\n\n"
                 f"{emoji.emojize(":soccer_ball:")} تیم های: {next_game}\n"
@@ -127,41 +123,64 @@ def next_match_finder():
     
         #TODO: better logs
         print(team+" DONE!!!!!")
-    
-    today_sorted_dict = today_games_sort(next_game_list, next_game_datetime_list)
-    print("today sorting DONE")
-    output_header = True
-    separator = "\u2014" * ((len(max(next_game_list, key=len))+ 12)//2)
-    
-    for k, v in today_sorted_dict.items():
-        if output_header:     
-            print("writing output.txt")
-            with open("teams_data/output.txt", "a", encoding="utf-8")as f:                 
-                f.write(
-                        "بازی های امروز\n\n"
-                        f"{emoji.emojize(":soccer_ball:")} تیم های: {k}\n"
-                        f"{emoji.emojize(":alarm_clock:")} ساعت: {v}\n"  
-                        f"\u200f{separator}\n"
+    if len(next_game_list) != 0 and len(next_game_datetime_list) != 0:
+        today_sorted_dict = today_games_sort(next_game_list, next_game_datetime_list)
+        print("today sorting DONE")
+        output_header = True
+        separator = "\u2014" * ((len(max(next_game_list, key=len))+ 12)//2)
+        
+        for k, v in today_sorted_dict.items():
+            if output_header:     
+                print("writing output.txt")
+                with open("teams_data/output.txt", "a", encoding="utf-8")as f:                 
+                    f.write(
+                            "بازی های امروز\n\n"
+                            f"{emoji.emojize(":soccer_ball:")} تیم های: {k}\n"
+                            f"{emoji.emojize(":alarm_clock:")} ساعت: {v}\n"  
+                            f"\u200f{separator}\n"
 
-                        )
-            output_header = False
-        else:
-            print("writing output.txt")
-            with open("teams_data/output.txt", "a", encoding="utf-8")as f: 
-            
-                f.write(
-                        f"{emoji.emojize(":soccer_ball:")} تیم های: {k}\n"  
-                        f"{emoji.emojize(":alarm_clock:")} ساعت: {v}\n"  
-                        f"\u200f{separator}\n"
-                        
                             )
-              
+                output_header = False
+            else:
+                print("writing output.txt")
+                with open("teams_data/output.txt", "a", encoding="utf-8")as f: 
+                
+                    f.write(
+                            f"{emoji.emojize(":soccer_ball:")} تیم های: {k}\n"  
+                            f"{emoji.emojize(":alarm_clock:")} ساعت: {v}\n"  
+                            f"\u200f{separator}\n"
+                            
+                                )
+    else:
+        print("No Today matches found !")            
     print("Done at", datetime.datetime.now().strftime("%H:%M"))
+def last_match_finder():
+    for team in teamid_sportdb:
+        open(f"teams_data/latestgames/{team}.txt", "w").close()
+        req = requests.get(f"https://www.thesportsdb.com/api/v1/json/123/eventslast.php?id={teamid_sportdb[team]}").json()
+        hometeam_name = req['results'][0]['strHomeTeam']
+        hometeam_result = req['results'][0]['intHomeScore']
+        
+        awayteam_name = req['results'][0]['strAwayTeam']
+        awayteam_result = req['results'][0]['intAwayScore']
+        with open(f"teams_data/latestgames/{team}.txt", "w", encoding="utf-8") as f:
+            f.write(
+                
+                f"{hometeam_name}  {hometeam_result} - {awayteam_result}  {awayteam_name}"
+                
+                )
+        print(f"{team} last result DONE !!!")
+
 
 # SCHEDULE RUNS
 schedule.every().hour.do(next_match_finder)
-
+# schedule.every().day.at("16:33").do(last_match_finder)
+# print("sleeping for 10s")
+# sleep(10)
 next_match_finder()
+# print("sleeping again for 2 min")
+# sleep(120)
+# last_match_finder()
 
 while True:
     schedule.run_pending()
