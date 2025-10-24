@@ -5,7 +5,7 @@ from time import sleep
 from persiantools.jdatetime import JalaliDate
 import pytz
 import emoji
-from data import rooz, teamid_sportdb
+from data import rooz, teamid_sportdb   
  
 #   TODO: better variable names if it's possible
 
@@ -71,8 +71,9 @@ def next_match_finder():
         #   CLEAR FILES FOR NEW OUTPUT
         open(f"teams_data/{team}.txt", "w").close()
         data = requests.get(f"https://www.thesportsdb.com/api/v1/json/123/eventsnext.php?id={teamid_sportdb[team]}").json()
-        if not data or not data["events"]:
-            return "دوباره تلاش کنید."
+        if not data or not data["events"] or data['events'] is None:
+            print(f"{team} API data issues")
+            continue
         
         cleared_data = data["events"][0]
         game_league = cleared_data["strLeague"]
