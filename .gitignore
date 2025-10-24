@@ -4,4 +4,8 @@
 /.python-version
 /requirements.txt
 /README.md
-sample_flashscore.json
+/sample_flashscore.json
+/database.py
+/usage.db
+/__pycache__
+/.venv
